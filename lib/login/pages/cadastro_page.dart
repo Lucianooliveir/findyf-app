@@ -1,3 +1,5 @@
+import 'package:findyf_app/commons/config/appcolors.dart';
+import 'package:findyf_app/commons/widgets/filled_button_widget.dart';
 import 'package:findyf_app/login/controllers/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -15,111 +17,123 @@ class CadastroPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Entrar"),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            children: [
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: "Nome",
-                  border: OutlineInputBorder(),
-                ),
-                controller: loginController.nomeController,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: "Telefone",
-                  border: OutlineInputBorder(),
-                ),
-                inputFormatters: [
-                  MaskTextInputFormatter(
-                    mask: "(##) #####-####",
-                    filter: {"#": RegExp(r'[0-9]')},
-                    type: MaskAutoCompletionType.lazy,
+      body: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              decoration: const InputDecoration(
+                labelText: "Email",
+                fillColor: Appcolors.textColor,
+                hintText: "exemplo@email.com",
+                filled: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(15),
                   ),
-                ],
-                controller: loginController.telefoneController,
-                keyboardType: TextInputType.number,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: "Email",
-                  border: OutlineInputBorder(),
                 ),
-                controller: loginController.emailController,
               ),
-              const SizedBox(
-                height: 20,
+              controller: loginController.emailController,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            TextField(
+              decoration: const InputDecoration(
+                labelText: "Telefone",
+                fillColor: Appcolors.textColor,
+                hintText: "(12) 34567-8901",
+                filled: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(15),
+                  ),
+                ),
               ),
-              Obx(
-                () => TextField(
-                  decoration: InputDecoration(
-                    labelText: "Senha",
-                    border: const OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      onPressed: () => {loginController.visibilidadeSenha()},
-                      icon: Icon(
-                        loginController.senha.value
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                      ),
+              inputFormatters: [
+                MaskTextInputFormatter(
+                  mask: "(##) #####-####",
+                  filter: {"#": RegExp(r'[0-9]')},
+                  type: MaskAutoCompletionType.lazy,
+                ),
+              ],
+              controller: loginController.telefoneController,
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Obx(
+              () => TextField(
+                decoration: InputDecoration(
+                  labelText: "Senha",
+                  fillColor: Appcolors.textColor,
+                  hintText: "********",
+                  filled: true,
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(15),
                     ),
                   ),
-                  obscureText: loginController.senha.value,
-                  controller: loginController.senhaController,
+                  suffixIcon: IconButton(
+                    onPressed: () => {loginController.visibilidadeSenha()},
+                    icon: Icon(
+                      loginController.senha.value
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
+                  ),
                 ),
+                obscureText: loginController.senha.value,
+                controller: loginController.senhaController,
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      decoration: const InputDecoration(
-                        labelText: "Cep",
-                        border: OutlineInputBorder(),
-                      ),
-                      controller: loginController.cepController,
-                      inputFormatters: [
-                        MaskTextInputFormatter(
-                          mask: "#####-###",
-                          filter: {"#": RegExp(r'[0-9]')},
-                          type: MaskAutoCompletionType.lazy,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      labelText: "Cep",
+                      fillColor: Appcolors.textColor,
+                      hintText: "12345-678",
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(15),
                         ),
-                      ],
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 30,
-                  ),
-                  Expanded(
-                    child: TextField(
-                      decoration: const InputDecoration(
-                        labelText: "Número",
-                        border: OutlineInputBorder(),
                       ),
-                      controller: loginController.numeroController,
                     ),
+                    controller: loginController.cepController,
+                    inputFormatters: [
+                      MaskTextInputFormatter(
+                        mask: "#####-###",
+                        filter: {"#": RegExp(r'[0-9]')},
+                        type: MaskAutoCompletionType.lazy,
+                      ),
+                    ],
+                    keyboardType: TextInputType.number,
                   ),
-                ],
-              ),
-              FilledButton(
-                onPressed: () => {
-                  loginController.concluirCadastro(),
-                },
-                child: const Text("Concluir cadastro"),
-              ),
-            ],
-          ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+              ],
+            ),
+            const Spacer(),
+            FilledButtonWidget(
+              onPressed: () => {
+                loginController.concluirCadastro(),
+              },
+              label: "Continuar",
+            ),
+            const SizedBox(
+              height: 50,
+            )
+          ],
         ),
       ),
     );

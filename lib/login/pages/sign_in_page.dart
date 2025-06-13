@@ -1,3 +1,5 @@
+import 'package:findyf_app/commons/config/appcolors.dart';
+import 'package:findyf_app/commons/widgets/filled_button_widget.dart';
 import 'package:findyf_app/login/controllers/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,15 +13,26 @@ class SignInPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Login")),
+      appBar: AppBar(title: const Text("Entrar")),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const SizedBox(
+              height: 30,
+            ),
             TextField(
               decoration: const InputDecoration(
                 labelText: "Email",
-                border: OutlineInputBorder(),
+                fillColor: Appcolors.textColor,
+                hintText: "exemplo@email.com",
+                filled: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(15),
+                  ),
+                ),
               ),
               controller: loginController.emailController,
             ),
@@ -30,7 +43,14 @@ class SignInPage extends StatelessWidget {
               () => TextField(
                 decoration: InputDecoration(
                   labelText: "Senha",
-                  border: const OutlineInputBorder(),
+                  fillColor: Appcolors.textColor,
+                  hintText: "**********",
+                  filled: true,
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(15),
+                    ),
+                  ),
                   suffixIcon: IconButton(
                     onPressed: () => {loginController.visibilidadeSenha()},
                     icon: Icon(
@@ -44,9 +64,14 @@ class SignInPage extends StatelessWidget {
                 controller: loginController.senhaController,
               ),
             ),
-            FilledButton(
-                onPressed: () => {loginController.login()},
-                child: const Text("Entrar"))
+            const Spacer(),
+            FilledButtonWidget(
+              onPressed: () => {loginController.login()},
+              label: "Entrar",
+            ),
+            const SizedBox(
+              height: 50,
+            ),
           ],
         ),
       ),
