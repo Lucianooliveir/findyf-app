@@ -6,9 +6,11 @@ import 'package:dio/dio.dart' as di;
 import 'package:findyf_app/commons/config/variables.dart';
 import 'package:findyf_app/commons/controllers/global_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class LoginController extends GetxController {
   RxBool senha = true.obs;
@@ -26,6 +28,16 @@ class LoginController extends GetxController {
 
   void visibilidadeSenha() {
     senha.value = !senha.value;
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    start();
+  }
+
+  start() async {
+    imgBack = await getImageFileFromAssets("assets/images/pfp.png");
   }
 
   void enviarCadastro() async {
@@ -79,8 +91,9 @@ class LoginController extends GetxController {
     Get.toNamed("/login/customizar");
   }
 
-  void redefinir() {
+  void redefinir() async {
     file.value = Image.asset("assets/images/pfp.png");
+    imgBack = await getImageFileFromAssets("assets/images/pfp.png");
   }
 
   void login() async {
@@ -135,5 +148,16 @@ class LoginController extends GetxController {
     Uint8List uint8list = base64.decode(imageAsString);
     Image image = Image.memory(uint8list);
     return image;
+  }
+
+  Future<File> getImageFileFromAssets(String path) async {
+    final byteData = await rootBundle.load(path);
+
+    final file = File('${(await getTemporaryDirectory()).path}/$path');
+    await file.create(recursive: true);
+    await file.writeAsBytes(byteData.buffer
+        .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+
+    return file;
   }
 }
