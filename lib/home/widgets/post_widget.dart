@@ -39,6 +39,9 @@ class PostWidget extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(
+            height: 10,
+          ),
           Center(
             child: CachedNetworkImage(
               imageUrl: "${Variables.baseUrl}/${postagem.imagem_post}",
