@@ -1,9 +1,12 @@
 import 'package:findyf_app/commons/models/user_model.dart';
+import 'package:findyf_app/commons/config/variables.dart';
+import 'package:dio/dio.dart' as di;
 import 'package:get/get.dart';
 
 class GlobalController extends GetxController {
   String token = "";
   Rx<UserModel?> userInfos = Rx<UserModel?>(null);
+  final dio = di.Dio();
 
   updateUserInfos(Map<String, dynamic> json) {
     userInfos.value = UserModel.fromJson(json);
@@ -35,6 +38,7 @@ class GlobalController extends GetxController {
       imagem_perfil: userInfos.value!.imagem_perfil,
       curtidos: currentLikes,
       postagens: userInfos.value!.postagens,
+      isShelter: userInfos.value!.isShelter,
     );
   }
 }

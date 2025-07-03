@@ -56,7 +56,7 @@ class LoginController extends GetxController {
         data: formdata,
       );
       globalController.token = response.data["token"];
-      globalController.updateUserInfos(response.data['user']);
+      globalController.updateUserInfos(response.data['userinfo']);
 
       Get.toNamed("/home");
     } on di.DioException catch (e) {

@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:findyf_app/commons/models/post_user_model.dart';
+import 'package:findyf_app/commons/models/abrigo_model.dart';
 
 part 'user_model.g.dart';
 
@@ -29,6 +30,12 @@ class UserModel {
   @JsonKey(defaultValue: <PostUserModel>[])
   final List<PostUserModel> postagens;
 
+  @JsonKey(defaultValue: false)
+  final bool isShelter;
+
+  @JsonKey(defaultValue: null)
+  final AbrigoModel? abrigo;
+
   UserModel(
       {required this.id,
       required this.nome,
@@ -37,7 +44,9 @@ class UserModel {
       required this.cep,
       required this.imagem_perfil,
       required this.curtidos,
-      required this.postagens});
+      required this.postagens,
+      required this.isShelter,
+      this.abrigo});
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);

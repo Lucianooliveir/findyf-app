@@ -6,6 +6,7 @@ import 'package:dio/dio.dart' as di;
 import 'package:findyf_app/commons/config/variables.dart';
 import 'package:findyf_app/commons/controllers/global_controller.dart';
 import 'package:findyf_app/commons/models/postagem_model.dart';
+import 'package:findyf_app/commons/models/animal_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -117,20 +118,23 @@ class HomeController extends GetxController {
     return image;
   }
 
-  void postar() async {
+  void postar([int? animalId]) async {
     if (!trocou.value || descricaoController.text.isEmpty) {
       Get.snackbar(
           "Erro", "Escolha uma imagem e escreva uma descrição para postar");
       return;
     }
 
-    di.FormData fd = di.FormData.fromMap(
-      {
-        "texto": descricaoController.text,
-        "file": await di.MultipartFile.fromFile(imgBack.path),
-        "user_infos": globalController.userInfos.value!.id,
-      },
-    );
+    final dataMap = {
+      "texto": descricaoController.text,
+      "file": await di.MultipartFile.fromFile(imgBack.path),
+      "user_infos": globalController.userInfos.value!.id,
+    };
+    if (animalId != null) {
+      dataMap["animal"] = animalId;
+    }
+
+    di.FormData fd = di.FormData.fromMap(dataMap);
 
     try {
       // ignore: unused_local_variable

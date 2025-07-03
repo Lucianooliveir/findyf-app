@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:findyf_app/commons/config/variables.dart';
 import 'package:findyf_app/commons/controllers/global_controller.dart';
 import 'package:findyf_app/commons/models/postagem_model.dart';
+import 'package:findyf_app/commons/widgets/verified_user_name.dart';
 import 'package:findyf_app/home/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,10 +23,6 @@ class PostWidget extends StatelessWidget {
         children: [
           InkWell(
             onTap: () => {
-              print(
-                  "Navigating to profile for user: ${postagem.user_infos.nome}"),
-              print(
-                  "User posts count: ${postagem.user_infos.postagens.length}"),
               Get.toNamed("/other-user-profile",
                   arguments: {"user": postagem.user_infos})
             },
@@ -49,7 +46,10 @@ class PostWidget extends StatelessWidget {
                 const SizedBox(
                   width: 10,
                 ),
-                Text(postagem.user_infos.nome),
+                VerifiedUserName(
+                  userName: postagem.user_infos.nome,
+                  isVerified: postagem.user_infos.isShelter,
+                ),
               ],
             ),
           ),

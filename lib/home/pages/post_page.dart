@@ -3,6 +3,7 @@ import 'package:findyf_app/commons/config/variables.dart';
 import 'package:findyf_app/commons/controllers/global_controller.dart';
 import 'package:findyf_app/commons/models/postagem_model.dart';
 import 'package:findyf_app/commons/models/comentario_model.dart';
+import 'package:findyf_app/commons/widgets/verified_user_name.dart';
 import 'package:findyf_app/home/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,7 +23,6 @@ class _PostPageState extends State<PostPage> {
   ComentarioModel? replyingTo;
   final FocusNode _focusNode = FocusNode();
 
-  // Get the current post data from the controller, or fall back to initial data
   PostagemModel get currentPostagem {
     final updatedPost = homeController.postagens.firstWhereOrNull(
       (post) => post.id == initialPostagem.id,
@@ -74,7 +74,10 @@ class _PostPageState extends State<PostPage> {
                             const SizedBox(
                               width: 10,
                             ),
-                            Text(postagem.user_infos.nome),
+                            VerifiedUserName(
+                              userName: postagem.user_infos.nome,
+                              isVerified: postagem.user_infos.isShelter,
+                            ),
                           ],
                         ),
                       ),
@@ -95,6 +98,83 @@ class _PostPageState extends State<PostPage> {
                               const Icon(Icons.error),
                         ),
                       ),
+                      if (postagem.animal != null) ...[
+                        const SizedBox(height: 16),
+                        GestureDetector(
+                          onTap: () {
+                            Get.toNamed("/animal-profile",
+                                arguments: {"animal": postagem.animal});
+                          },
+                          child: Card(
+                            elevation: 3,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: const BorderRadius.horizontal(
+                                      left: Radius.circular(12)),
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        "${Variables.baseUrl}/${postagem.animal!.imagem}",
+                                    width: 90,
+                                    height: 90,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) => Container(
+                                      color: Colors.grey[200],
+                                      child: const Center(
+                                          child: CircularProgressIndicator()),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        Container(
+                                      color: Colors.grey[200],
+                                      child: const Icon(Icons.pets,
+                                          size: 40, color: Colors.grey),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          postagem.animal!.nome,
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          "${postagem.animal!.especie} • ${postagem.animal!.porte}",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.grey[700]),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          postagem.animal!.raca,
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              color: Colors.grey[600]),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.only(right: 12.0),
+                                  child: Icon(Icons.arrow_forward_ios,
+                                      size: 18, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                       // Like and comment buttons
                       Obx(
                         () => Row(
@@ -323,9 +403,10 @@ class _PostPageState extends State<PostPage> {
                   ).image,
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  reply.autor.nome,
-                  style: const TextStyle(
+                VerifiedUserName(
+                  userName: reply.autor.nome,
+                  isVerified: reply.autor.isShelter,
+                  textStyle: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
                   ),
@@ -384,9 +465,10 @@ class _PostPageState extends State<PostPage> {
                   ).image,
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  comentario.autor.nome,
-                  style: const TextStyle(
+                VerifiedUserName(
+                  userName: comentario.autor.nome,
+                  isVerified: comentario.autor.isShelter,
+                  textStyle: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),

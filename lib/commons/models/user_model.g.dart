@@ -20,6 +20,10 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
               ?.map((e) => PostUserModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
+      isShelter: json['isShelter'] as bool? ?? false,
+      abrigo: json['abrigo'] == null
+          ? null
+          : AbrigoModel.fromJson(json['abrigo'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
@@ -31,4 +35,6 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
       'imagem_perfil': instance.imagem_perfil,
       'curtidos': instance.curtidos,
       'postagens': instance.postagens,
+      'isShelter': instance.isShelter,
+      'abrigo': instance.abrigo,
     };

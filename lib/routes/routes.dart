@@ -1,5 +1,6 @@
 import 'package:findyf_app/commons/bindings/global_bindings.dart';
 import 'package:findyf_app/home/bindings/home_bindings.dart';
+import 'package:findyf_app/home/pages/animal_profile_page.dart';
 import 'package:findyf_app/home/pages/home_page.dart';
 import 'package:findyf_app/home/pages/other_user_profile_page.dart';
 import 'package:findyf_app/home/pages/post_page.dart';
@@ -8,6 +9,8 @@ import 'package:findyf_app/login/pages/cadastro_page.dart';
 import 'package:findyf_app/login/pages/customizar_page.dart';
 import 'package:findyf_app/login/pages/login_page.dart';
 import 'package:findyf_app/login/pages/sign_in_page.dart';
+import 'package:findyf_app/shelter/bindings/shelter_bindings.dart';
+import 'package:findyf_app/shelter/pages/cadastrar_abrigo_page.dart';
 import 'package:get/route_manager.dart';
 
 final appRoutes = [
@@ -47,6 +50,20 @@ final appRoutes = [
       page: () => const OtherUserProfilePage(),
       bindings: [
         HomeBindings(),
+        GlobalBindings(),
+      ]),
+  GetPage(
+      name: "/animal-profile",
+      page: () => const AnimalProfilePage(),
+      bindings: [
+        HomeBindings(),
+        GlobalBindings(),
+      ]),
+  GetPage(
+      name: "/cadastrar-abrigo",
+      page: () => CadastrarAbrigoPage(),
+      bindings: [
+        ShelterBindings(),
         GlobalBindings(),
       ]),
 ];

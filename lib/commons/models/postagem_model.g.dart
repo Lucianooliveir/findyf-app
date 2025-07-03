@@ -21,6 +21,9 @@ PostagemModel _$PostagemModelFromJson(Map<String, dynamic> json) =>
               ?.map((e) => CurtidaModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
+      animal: json['animal'] == null
+          ? null
+          : AnimalModel.fromJson(json['animal'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$PostagemModelToJson(PostagemModel instance) =>
@@ -32,4 +35,5 @@ Map<String, dynamic> _$PostagemModelToJson(PostagemModel instance) =>
       'user_infos': instance.user_infos,
       'comentarios': instance.comentarios,
       'curtidas': instance.curtidas,
+      'animal': instance.animal,
     };
