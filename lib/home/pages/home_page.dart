@@ -31,6 +31,7 @@ class HomePage extends StatelessWidget {
     return Obx(
       () => Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Text(titulos[homeController.index.value]),
           actions: homeController.index.value == 2 // Profile tab
               ? [

@@ -58,7 +58,7 @@ class LoginController extends GetxController {
       globalController.token = response.data["token"];
       globalController.updateUserInfos(response.data['userinfo']);
 
-      Get.toNamed("/home");
+      Get.offAndToNamed("/home");
     } on di.DioException catch (e) {
       if (e.response?.statusCode == 409) {
         Get.snackbar("Erro",

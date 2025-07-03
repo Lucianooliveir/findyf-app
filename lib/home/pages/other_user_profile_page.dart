@@ -1,11 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:findyf_app/commons/config/appcolors.dart';
 import 'package:findyf_app/commons/config/variables.dart';
 import 'package:findyf_app/commons/controllers/animal_controller.dart';
+import 'package:findyf_app/commons/controllers/evento_controller.dart';
 import 'package:findyf_app/commons/models/user_model.dart';
 import 'package:findyf_app/commons/widgets/verified_user_name.dart';
 import 'package:findyf_app/home/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class OtherUserProfilePage extends StatelessWidget {
   const OtherUserProfilePage({super.key});
@@ -15,6 +18,7 @@ class OtherUserProfilePage extends StatelessWidget {
     final UserModel user = Get.arguments["user"];
     final HomeController homeController = Get.find();
     final AnimalController animalController = Get.find();
+    final EventoController eventoController = Get.put(EventoController());
 
     // Filter posts from HomeController that belong to this user
     final userPosts = homeController.postagens
@@ -129,7 +133,7 @@ class OtherUserProfilePage extends StatelessWidget {
           if (user.isShelter && user.abrigo != null)
             Expanded(
               child: DefaultTabController(
-                length: 2,
+                length: 3,
                 child: Column(
                   children: [
                     const TabBar(
@@ -144,6 +148,10 @@ class OtherUserProfilePage extends StatelessWidget {
                           icon: Icon(Icons.pets),
                           text: "Animais",
                         ),
+                        Tab(
+                          icon: Icon(Icons.event),
+                          text: "Eventos",
+                        ),
                       ],
                     ),
                     Expanded(
@@ -151,6 +159,7 @@ class OtherUserProfilePage extends StatelessWidget {
                         children: [
                           _buildPostsTab(userPosts, homeController),
                           _buildAnimalsTab(user, animalController),
+                          _buildEventsTab(user, eventoController),
                         ],
                       ),
                     ),
@@ -394,5 +403,198 @@ class OtherUserProfilePage extends StatelessWidget {
         ),
       );
     });
+  }
+
+  Widget _buildEventsTab(UserModel user, EventoController eventoController) {
+    // Load events for this shelter when the tab is built
+    if (user.abrigo != null) {
+      eventoController.getEventosByAbrigo(user.abrigo!.id);
+    }
+
+    return Obx(() {
+      if (eventoController.isLoadingEventos.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      final events = eventoController.eventos;
+
+      if (events.isEmpty) {
+        return const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.event_outlined,
+                size: 80,
+                color: Colors.grey,
+              ),
+              SizedBox(height: 16),
+              Text(
+                "Nenhum evento encontrado",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                "Este abrigo ainda não possui eventos",
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+
+      return ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: events.length,
+        itemBuilder: (context, index) {
+          final event = events[index];
+          return Container(
+            margin: const EdgeInsets.only(bottom: 16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Event name
+                  Text(
+                    event.nome,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  
+                  // Event description
+                  Text(
+                    event.descricao,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[700],
+                      height: 1.4,
+                    ),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 12),
+                  
+                  // Event details row
+                  Row(
+                    children: [
+                      // Date icon and info
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.calendar_today,
+                              size: 16,
+                              color: Appcolors.primaryColor,
+                            ),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _formatDate(event.dataInicio),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  if (event.dataInicio != event.dataFim)
+                                    Text(
+                                      "até ${_formatDate(event.dataFim)}",
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      
+                      // Time
+                      if (event.horario.isNotEmpty)
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.access_time,
+                              size: 16,
+                              color: Appcolors.primaryColor,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              event.horario,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+                  
+                  // Price (if not empty)
+                  if (event.preco.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.attach_money,
+                          size: 16,
+                          color: Appcolors.primaryColor,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          event.preco,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Appcolors.primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    });
+  }
+
+  String _formatDate(String dateString) {
+    try {
+      final date = DateTime.parse(dateString);
+      return DateFormat('dd/MM/yyyy').format(date);
+    } catch (e) {
+      return dateString;
+    }
   }
 }

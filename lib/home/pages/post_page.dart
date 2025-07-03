@@ -196,24 +196,30 @@ class _PostPageState extends State<PostPage> {
                             const SizedBox(
                               width: 10,
                             ),
-                            IconButton(
-                              onPressed: () => {},
-                              icon: const Icon(
-                                Icons.chat_bubble_outline,
-                              ),
-                            ),
                           ],
                         ),
                       ),
                       // Post description
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Text(
-                          postagem.texto,
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(fontSize: 12),
+                      if (postagem.texto.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 6),
+                          child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.all(12),
+                            child: Text(
+                              postagem.texto,
+                              style: const TextStyle(
+                                  fontSize: 14, color: Colors.black87),
+                              maxLines: 10,
+                              overflow: TextOverflow.visible,
+                            ),
+                          ),
                         ),
-                      ),
                       const SizedBox(height: 20),
                       // Comments section
                       const Divider(),
