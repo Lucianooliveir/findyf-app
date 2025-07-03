@@ -10,51 +10,90 @@ class CreatePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => Column(
-        children: [
-          InkWell(
+    return Column(
+      children: [
+        Obx(
+          () => InkWell(
             onTap: () => homeController.escolherImagem(),
             child: Container(
               height: 400,
               width: 1000,
-              color: Colors.black,
-              child: Image(
-                image: homeController.file.value.image,
-                fit: BoxFit.fill,
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          TextFormField(
-            controller: homeController.descricaoController,
-            decoration: const InputDecoration(
-              fillColor: Colors.white,
-              filled: true,
-              hintText: "Descrição",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(15),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                border: Border.all(
+                  color: Colors.grey[300]!,
+                  width: 2,
+                  style: BorderStyle.solid,
                 ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: homeController.trocou.value
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image(
+                        image: homeController.file.value.image,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.camera_alt_outlined,
+                          size: 80,
+                          color: Colors.grey[400],
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          "Toque para adicionar uma imagem",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "JPG, PNG ou JPEG",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[400],
+                          ),
+                        ),
+                      ],
+                    ),
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 30,
+        ),
+        TextFormField(
+          controller: homeController.descricaoController,
+          decoration: const InputDecoration(
+            fillColor: Colors.white,
+            filled: true,
+            hintText: "Descrição",
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(15),
               ),
             ),
-            maxLines: 4,
-            minLines: 4,
           ),
-          const Spacer(),
-          FilledButtonWidget(
-            label: "Postar",
-            onPressed: () => {
-              homeController.postar(),
-            },
-          ),
-          const SizedBox(
-            height: 20,
-          )
-        ],
-      ),
+          maxLines: 4,
+          minLines: 4,
+        ),
+        const Spacer(),
+        FilledButtonWidget(
+          label: "Postar",
+          onPressed: () => {
+            homeController.postar(),
+          },
+        ),
+        const SizedBox(
+          height: 20,
+        )
+      ],
     );
   }
 }

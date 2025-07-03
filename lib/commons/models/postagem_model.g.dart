@@ -14,6 +14,13 @@ PostagemModel _$PostagemModelFromJson(Map<String, dynamic> json) =>
       imagem_post: json['imagem_post'] as String? ?? '',
       user_infos:
           UserModel.fromJson(json['user_infos'] as Map<String, dynamic>),
+      comentarios: (json['comentarios'] as List<dynamic>)
+          .map((e) => ComentarioModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      curtidas: (json['curtidas'] as List<dynamic>?)
+              ?.map((e) => CurtidaModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
     );
 
 Map<String, dynamic> _$PostagemModelToJson(PostagemModel instance) =>
@@ -23,4 +30,6 @@ Map<String, dynamic> _$PostagemModelToJson(PostagemModel instance) =>
       'data': instance.data,
       'imagem_post': instance.imagem_post,
       'user_infos': instance.user_infos,
+      'comentarios': instance.comentarios,
+      'curtidas': instance.curtidas,
     };

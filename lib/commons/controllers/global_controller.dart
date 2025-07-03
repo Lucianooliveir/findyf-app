@@ -3,10 +3,38 @@ import 'package:get/get.dart';
 
 class GlobalController extends GetxController {
   String token = "";
-  late UserModel userInfos;
+  Rx<UserModel?> userInfos = Rx<UserModel?>(null);
 
   updateUserInfos(Map<String, dynamic> json) {
-    userInfos = UserModel.fromJson(json);
-    print(userInfos);
+    userInfos.value = UserModel.fromJson(json);
+    print(userInfos.value);
+  }
+
+  bool isPostLiked(int postId) {
+    if (userInfos.value == null) return false;
+    return userInfos.value!.curtidos.contains(postId);
+  }
+
+  void updateLikedPosts(int postId, bool isLiked) {
+    if (userInfos.value == null) return;
+
+    List<int> currentLikes = List.from(userInfos.value!.curtidos);
+
+    if (isLiked && !currentLikes.contains(postId)) {
+      currentLikes.add(postId);
+    } else if (!isLiked && currentLikes.contains(postId)) {
+      currentLikes.remove(postId);
+    }
+
+    userInfos.value = UserModel(
+      id: userInfos.value!.id,
+      nome: userInfos.value!.nome,
+      telefone: userInfos.value!.telefone,
+      email: userInfos.value!.email,
+      cep: userInfos.value!.cep,
+      imagem_perfil: userInfos.value!.imagem_perfil,
+      curtidos: currentLikes,
+      postagens: userInfos.value!.postagens,
+    );
   }
 }

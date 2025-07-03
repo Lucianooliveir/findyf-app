@@ -1,27 +1,39 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:findyf_app/commons/config/variables.dart';
-import 'package:findyf_app/commons/controllers/global_controller.dart';
-import 'package:findyf_app/commons/widgets/filled_button_widget.dart';
+import 'package:findyf_app/commons/models/user_model.dart';
 import 'package:findyf_app/home/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class PerfilPage extends StatelessWidget {
-  const PerfilPage({super.key});
+class OtherUserProfilePage extends StatelessWidget {
+  const OtherUserProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final GlobalController globalController = Get.find();
+    final UserModel user = Get.arguments["user"];
     final HomeController homeController = Get.find();
 
-    return Obx(() {
-      if (globalController.userInfos.value == null) {
-        return const Center(child: CircularProgressIndicator());
-      }
+    // Filter posts from HomeController that belong to this user
+    final userPosts = homeController.postagens
+        .where((post) => post.user_infos.id == user.id)
+        .toList();
 
-      final user = globalController.userInfos.value!;
+    // Debug print to see what we're receiving
+    print("Other user profile - User: ${user.nome}");
+    print("Other user profile - User ID: ${user.id}");
+    print(
+        "Other user profile - Posts from UserModel: ${user.postagens.length}");
+    print("Other user profile - Posts filtered from feed: ${userPosts.length}");
 
-      return Column(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(user.nome),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Get.back(),
+        ),
+      ),
+      body: Column(
         children: [
           // Profile Header
           Container(
@@ -72,7 +84,7 @@ class PerfilPage extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          "${user.postagens.length}",
+                          "${userPosts.length}",
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -108,58 +120,6 @@ class PerfilPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-
-                // Edit Profile Button
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButtonWidget(
-                    label: "Editar Perfil",
-                    onPressed: () {
-                      // TODO: Navigate to edit profile page
-                      Get.snackbar("Info", "Funcionalidade em desenvolvimento");
-                    },
-                  ),
-                ),
-                const SizedBox(height: 12),
-
-                // Logout Button
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      // Clear user session
-                      globalController.userInfos.value = null;
-                      globalController.token = "";
-
-                      // Navigate to login page
-                      Get.offAllNamed("/login");
-
-                      // Show logout message
-                      Get.snackbar(
-                        "Logout",
-                        "Você foi desconectado com sucesso",
-                        backgroundColor: Colors.blue[100],
-                        colorText: Colors.blue[800],
-                      );
-                    },
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.red,
-                      side: const BorderSide(color: Colors.red),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const Text(
-                      "Sair",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
@@ -169,28 +129,28 @@ class PerfilPage extends StatelessWidget {
 
           // Posts Grid
           Expanded(
-            child: user.postagens.isEmpty
-                ? const Center(
+            child: userPosts.isEmpty
+                ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.photo_camera_outlined,
                           size: 80,
                           color: Colors.grey,
                         ),
-                        SizedBox(height: 16),
-                        Text(
-                          "Nenhuma postagem ainda",
+                        const SizedBox(height: 16),
+                        const Text(
+                          "Nenhuma postagem encontrada",
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.grey,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        SizedBox(height: 8),
-                        Text(
-                          "Suas postagens aparecerão aqui",
+                        const SizedBox(height: 8),
+                        const Text(
+                          "Este usuário não tem postagens visíveis no feed atual",
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
@@ -209,30 +169,14 @@ class PerfilPage extends StatelessWidget {
                         mainAxisSpacing: 4,
                         childAspectRatio: 1,
                       ),
-                      itemCount: user.postagens.length,
+                      itemCount: userPosts.length,
                       itemBuilder: (context, index) {
-                        final post = user.postagens[index];
+                        final post = userPosts[index];
                         return InkWell(
                           onTap: () {
-                            // Try to find the corresponding PostagemModel in homeController.postagens
-                            final fullPost =
-                                homeController.postagens.firstWhereOrNull(
-                              (postagem) => postagem.id == post.id,
-                            );
-
-                            if (fullPost != null) {
-                              // Navigate to post page with the full post data
-                              Get.toNamed("/postagem",
-                                  arguments: {"postagem": fullPost});
-                            } else {
-                              // If post not found in current posts, show a message
-                              Get.snackbar(
-                                "Informação",
-                                "Post não encontrado na lista atual. Atualize o feed.",
-                                backgroundColor: Colors.orange[100],
-                                colorText: Colors.orange[800],
-                              );
-                            }
+                            // We already have the full PostagemModel, so navigate directly
+                            Get.toNamed("/postagem",
+                                arguments: {"postagem": post});
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -266,7 +210,7 @@ class PerfilPage extends StatelessWidget {
                   ),
           ),
         ],
-      );
-    });
+      ),
+    );
   }
 }

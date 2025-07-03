@@ -1,3 +1,5 @@
+import 'package:findyf_app/commons/models/comentario_model.dart';
+import 'package:findyf_app/commons/models/curtida_model.dart';
 import 'package:findyf_app/commons/models/user_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -19,12 +21,19 @@ class PostagemModel {
 
   final UserModel user_infos;
 
+  final List<ComentarioModel> comentarios;
+
+  @JsonKey(defaultValue: [])
+  final List<CurtidaModel> curtidas;
+
   PostagemModel(
       {required this.id,
       required this.texto,
       required this.data,
       required this.imagem_post,
-      required this.user_infos});
+      required this.user_infos,
+      required this.comentarios,
+      this.curtidas = const []});
 
   factory PostagemModel.fromJson(Map<String, dynamic> json) =>
       _$PostagemModelFromJson(json);

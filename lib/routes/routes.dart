@@ -1,6 +1,8 @@
 import 'package:findyf_app/commons/bindings/global_bindings.dart';
 import 'package:findyf_app/home/bindings/home_bindings.dart';
 import 'package:findyf_app/home/pages/home_page.dart';
+import 'package:findyf_app/home/pages/other_user_profile_page.dart';
+import 'package:findyf_app/home/pages/post_page.dart';
 import 'package:findyf_app/login/bindings/login_bindings.dart';
 import 'package:findyf_app/login/pages/cadastro_page.dart';
 import 'package:findyf_app/login/pages/customizar_page.dart';
@@ -36,4 +38,15 @@ final appRoutes = [
     page: () => HomePage(),
     bindings: [HomeBindings(), GlobalBindings()],
   ),
+  GetPage(name: "/postagem", page: () => PostPage(), bindings: [
+    HomeBindings(),
+    GlobalBindings(),
+  ]),
+  GetPage(
+      name: "/other-user-profile",
+      page: () => const OtherUserProfilePage(),
+      bindings: [
+        HomeBindings(),
+        GlobalBindings(),
+      ]),
 ];
